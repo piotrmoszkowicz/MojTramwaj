@@ -4,38 +4,58 @@ import { Ionicons } from '@expo/vector-icons';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 
 import TabBarIcon from '../components/TabBarIcon';
-import HomeScreen from '../screens/HomeScreen';
-import LinksScreen from '../screens/LinksScreen';
+import MapScreen from '../screens/MapScreen';
+import StopsScreen from '../screens/StopsScreen';
+import TripScreen from '../screens/TripScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 
-const HomeStack = createStackNavigator({
-  Home: HomeScreen,
+const MapStack = createStackNavigator({
+  Map: MapScreen,
 });
 
-HomeStack.navigationOptions = {
-  tabBarLabel: 'Home',
+MapStack.navigationOptions = {
+  tabBarLabel: 'Mapa',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
       name={
         Platform.OS === 'ios'
-          ? `ios-information-circle${focused ? '' : '-outline'}`
-          : 'md-information-circle'
+          ? `ios-map${focused ? '' : '-outline'}`
+          : 'md-map'
       }
     />
   ),
 };
 
-const LinksStack = createStackNavigator({
-  Links: LinksScreen,
+const StopsStack = createStackNavigator({
+  Stops: StopsScreen,
 });
 
-LinksStack.navigationOptions = {
-  tabBarLabel: 'Links',
+StopsStack.navigationOptions = {
+  tabBarLabel: 'Przystanki',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
-      name={Platform.OS === 'ios' ? `ios-link${focused ? '' : '-outline'}` : 'md-link'}
+      name={Platform.OS === 'ios' ? `ios-train${focused ? '' : '-outline'}` : 'md-train'}
+    />
+  ),
+};
+
+const TripStack = createStackNavigator({
+  Trip: TripScreen,
+});
+
+TripStack.navigationOptions = {
+  tabBarLabel: 'Połączenia',
+  tabBarIcon: ({
+    focused
+  }) => ( <
+    TabBarIcon focused = {
+      focused
+    }
+    name = {
+      Platform.OS === 'ios' ? `ios-git-compare${focused ? '' : '-outline'}` : 'md-git-compare'
+    }
     />
   ),
 };
@@ -45,7 +65,7 @@ const SettingsStack = createStackNavigator({
 });
 
 SettingsStack.navigationOptions = {
-  tabBarLabel: 'Settings',
+  tabBarLabel: 'Ustawienia',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
@@ -55,7 +75,8 @@ SettingsStack.navigationOptions = {
 };
 
 export default createBottomTabNavigator({
-  HomeStack,
-  LinksStack,
+  MapStack,
+  StopsStack,
+  TripStack,
   SettingsStack,
 });
