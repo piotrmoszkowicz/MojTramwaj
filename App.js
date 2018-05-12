@@ -10,14 +10,6 @@ export default class App extends React.Component {
     loading: true,
   };
 
-  /* async componentDidMount() {
-    const response = await Permissions.askAsync(Permissions.LOCATION);
-    if (response.status !== 'granted') throw "Jebło :<<";
-    this.setState({
-      loading: false,
-    });
-  } */
-
   render() {
     if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen && !this.state.loading) {
       return (

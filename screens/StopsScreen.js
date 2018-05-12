@@ -22,7 +22,7 @@ import {
 
 const entities = new AllHtmlEntities();
 
-export default class LinksScreen extends React.Component {
+export default class StopsScreen extends React.Component {
 
   static navigationOptions = {
     title: 'Na Przystanku',
@@ -44,7 +44,6 @@ export default class LinksScreen extends React.Component {
     this.downloadStopsWithQuery(query).then((stops) => {
       for(let i=0;i<stops.length;i++){
         stops[i].name = entities.decode(stops[i].name);
-        console.log(stops[i].name);
       }
       this.setState({
         stops: stops
@@ -96,8 +95,10 @@ export default class LinksScreen extends React.Component {
             renderRow={(item) =>
               <ListItem onPress = {
                 () => {
-                  console.log('pressed', item.id);
-                } //navigate('StopScreen', {id: item.id})
+                  navigate('Stop', {
+                    stop: item,
+                  });
+                }
               } >
                 <Text style={styles.w100}>{item.name}</Text>
               </ListItem>

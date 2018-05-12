@@ -30,6 +30,7 @@ MapStack.navigationOptions = {
 
 const StopsStack = createStackNavigator({
   Stops: StopsScreen,
+  Stop: StopScreen,
 });
 
 StopsStack.navigationOptions = {
@@ -42,42 +43,7 @@ StopsStack.navigationOptions = {
   ),
 };
 
-const TripStack = createStackNavigator({
-  Trip: TripScreen,
-});
-
-TripStack.navigationOptions = {
-  tabBarLabel: 'Połączenia',
-  tabBarIcon: ({
-    focused
-  }) => ( <
-    TabBarIcon focused = {
-      focused
-    }
-    name = {
-      Platform.OS === 'ios' ? `ios-git-compare${focused ? '' : '-outline'}` : 'md-git-compare'
-    }
-    />
-  ),
-};
-
-const SettingsStack = createStackNavigator({
-  Settings: SettingsScreen,
-});
-
-SettingsStack.navigationOptions = {
-  tabBarLabel: 'Ustawienia',
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={Platform.OS === 'ios' ? `ios-options${focused ? '' : '-outline'}` : 'md-options'}
-    />
-  ),
-};
-
 export default createBottomTabNavigator({
   MapStack,
-  StopsStack,
-  TripStack,
-  SettingsStack,
+  StopsStack
 });

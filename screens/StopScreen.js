@@ -1,25 +1,84 @@
 import React from 'react';
 import {
-  ScrollView,
   StyleSheet
 } from 'react-native';
-import {
-  ExpoLinksView
-} from '@expo/samples';
 
-export default class LinksScreen extends React.Component {
-  static navigationOptions = {
-    title: 'Links',
-  };
+import {
+  Icon,
+  Text,
+  Container,
+  Content,
+  Header,
+  Left,
+  Col,
+  Row,
+  Grid,
+  List,
+  ListItem
+} from 'native-base';
+
+export default class StopScreen extends React.Component {
+
+  constructor(props){
+    super(props);
+
+    this.state = {
+      trams: []
+    };
+  }
+
+  static navigationOptions = ({ navigation }) => ({
+    title: `${navigation.state.params.stop.name}`,
+  });
+
+  downloadTrams = () => {
+    const { params } = this.props.navigation.state;
+    const apiLink = `http://www.ttss.krakow.pl/internetservice/services/passageInfo/stopPassages/stop?stop=${parseInt(params.stop.id)}&mode=departure`;
+
+    return fetch(apiLink)
+      .then((response) => response.json())
+      .catch((err) => {
+        console.error(err);
+      });
+  }
+
+  componentWillMount = () => {
+    // this.downloadTrams();
+    this.downloadTrams().then((json) => {
+      this.setState({
+        trams: json.actual
+      });
+    });
+  }
 
   render() {
-    return ( <ScrollView style = {
-        styles.container
-      } > {
-        /* Go ahead and delete ExpoLinksView and replace it with your
-         * content, we just wanted to provide you with some helpful links */
-      } <ExpoLinksView />
-      </ScrollView>
+    return (
+      <Container>
+        <Content>
+          <List dataArray = {
+            this.state.trams
+          }
+          renderRow = {
+              (item) =>
+              <ListItem>
+                <Grid>
+                  <Row>
+                    <Col style={{width: "10%"}}>
+                      <Text>{ item.patternText }</Text>
+                    </Col>
+                    <Col style={{width: "70%"}}>
+                      <Text>{ item.direction }</Text>
+                    </Col>
+                    <Col style={{width: "20%"}}>
+                      <Text>{ item.mixedTime }</Text>
+                    </Col>
+                    </Row>
+                  </Grid>
+              </ListItem>
+            } >
+            </List>
+        </Content>
+      </Container>
     );
   }
 }
@@ -27,7 +86,8 @@ export default class LinksScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 15,
+    marginTop: 15,
+    paddingTop: 30,
     backgroundColor: '#fff',
   },
 });

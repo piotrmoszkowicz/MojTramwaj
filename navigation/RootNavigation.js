@@ -1,14 +1,23 @@
 import React from 'react';
 import { Notifications } from 'expo';
-import { createSwitchNavigator } from 'react-navigation';
+import {
+  createStackNavigator, createSwitchNavigator
+} from 'react-navigation';
 
 import MainTabNavigator from './MainTabNavigator';
+// import Stop from '../screens/StopScreen';
 import registerForPushNotificationsAsync from '../api/registerForPushNotificationsAsync';
+
+/* const test = createStackNavigator({
+  Stop
+}) */
 
 const AppNavigator = createSwitchNavigator({
   // You could add another route here for authentication.
   // Read more at https://reactnavigation.org/docs/en/auth-flow.html
-  Main: MainTabNavigator,
+  Main: MainTabNavigator
+  
+  // Stop: test,
 });
 
 export default class RootNavigation extends React.Component {
