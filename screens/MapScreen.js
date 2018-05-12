@@ -7,7 +7,7 @@ import {
   Permissions,
   Location
 } from 'expo';
-import { Container, Header, Text, Icon } from 'native-base';
+import { Container, Header, Text, Icon, Fab, Button } from 'native-base';
 
 
 export default class MapScreen extends React.Component {
@@ -35,10 +35,8 @@ export default class MapScreen extends React.Component {
         latitudeDelta: 0.01,
         longitudeDelta: 0.01
       },
+      acitve: true,
     };
-
-    console.log(this.state);
-
   }
 
   async getTramsLocations(lastTimeStamp) {
@@ -57,10 +55,7 @@ export default class MapScreen extends React.Component {
 
       let tramsToDraw = [];
 
-      console.log(trams.length);
-
       for (let i = 0; i < trams.length; i++) {
-        console.log(i);
         if (typeof trams[i].isDeleted !== 'undefined' && trams[i].isDeleted || trams[i].id === '0') {
           continue;
         }
@@ -68,8 +63,6 @@ export default class MapScreen extends React.Component {
         trams[i].longitude /= 3600000.0;
         tramsToDraw.push(trams[i]);
       }
-
-      console.log(tramsToDraw);
 
       this.setState({
         trams: tramsToDraw,
@@ -81,8 +74,18 @@ export default class MapScreen extends React.Component {
   async componentDidMount() {
     this.renderTrams();
 
+    this.myRegion();
+  }
+
+  handleMapRegionChange = mapRegion => {
+    this.setState({
+      mapRegion
+    });
+  }
+
+  myRegion = async () => {
     const response = await Permissions.askAsync(Permissions.LOCATION);
-    if (response.status === 'granted'){
+    if (response.status === 'granted') {
       try {
         let location = await Location.getCurrentPositionAsync({});
         this.setState({
@@ -93,17 +96,10 @@ export default class MapScreen extends React.Component {
             longitudeDelta: 0.01
           }
         });
-      }
-      catch (err) {
+      } catch (err) {
         console.error(err);
       }
     }
-  }
-
-  handleMapRegionChange = mapRegion => {
-    this.setState({
-      mapRegion
-    });
   }
 
   render() {
@@ -131,14 +127,39 @@ export default class MapScreen extends React.Component {
                 <MapView.Circle
                   key={i++}
                   center={crds}
-                  radius={15}
+                  radius={30}
                   fillColor={"#000"}
                 >
-                  <Text>{number}</Text>
+                  <Text style={{color: "#FFFFFF"}}>{number}</Text>
                 </MapView.Circle>
               );
             })}
           </MapView>
+          <Fab
+            active={this.state.active}
+            direction="up"
+            containerStyle={{ }}
+            style={{ backgroundColor: '#5067FF' }}
+            position="bottomRight"
+            onPress={() => this.setState({ active: !this.state.active })}>
+            <Icon name="md-compass" />
+            <Button style={{ backgroundColor: '#34A34F' }}
+                onPress={this.myRegion}
+            >
+              <Icon name="navigate" />
+            </Button>
+            <Button style={{ backgroundColor: '#3B5998' }}
+            onPress={() => this.setState({
+              mapRegion: {
+                latitude: 50.0646501,
+                longitude: 19.9449799,
+                latitudeDelta: 0.02,
+                longitudeDelta: 0.02,
+            }})}
+            >
+              <Icon name="md-locate" />
+            </Button>
+          </Fab>
       </Container>
     );
   }
