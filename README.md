@@ -1,7 +1,7 @@
 # MójTramwaj
 
 Simple App utilizing Cracow's TTSS Api to get knowladge about current trams' positions.
-Build at SortwareMansion Hackathon at 13.05.2018.
+Build at SortwareMansion Hackathon at 12.05.2018.
 
 ## Built With
 
