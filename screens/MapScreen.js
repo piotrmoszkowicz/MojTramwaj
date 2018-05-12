@@ -14,12 +14,6 @@ import { Container, Header, Text, Icon, Fab, Button, Spinner } from 'native-base
 export default class MapScreen extends React.Component {
   static navigationOptions = {
     title: 'Mapa',
-    /* headerRight:
-      <Icon
-        name={'md-refresh'}
-        onPress = { this.renderTrams }
-        style = {{ marginRight: 10 }}
-      />, */
   };
 
   constructor(props){
