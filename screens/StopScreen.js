@@ -19,6 +19,10 @@ import {
   Spinner
 } from 'native-base';
 
+import getVehicleInfo from '../utils/tramUtils';
+
+console.log(getVehicleInfo);
+
 export default class StopScreen extends React.Component {
 
   constructor(props){
@@ -35,9 +39,9 @@ export default class StopScreen extends React.Component {
     title: `${navigation.state.params.stop.name}`,
   });
 
-  downloadTrams = () => {
+  downloadTrams = (type) => {
     const { params } = this.props.navigation.state;
-    const apiLink = `http://www.ttss.krakow.pl/internetservice/services/passageInfo/stopPassages/stop?stop=${parseInt(params.stop.id)}&mode=departure`;
+    const apiLink = `http://www.ttss.krakow.pl/internetservice/services/passageInfo/stopPassages/stop?stop=${parseInt(params.stop.id)}&mode=${type}`;
 
     return fetch(apiLink)
       .then((response) => response.json())
@@ -50,15 +54,46 @@ export default class StopScreen extends React.Component {
     this.setState({
       loadingTrams: true,
     });
-    this.downloadTrams().then((json) => {
+    this.downloadTrams('departure').then((json) => {
       let alertStr = '';
       for(let i=0;i<json.generalAlerts.length;i++){
         alertStr += json.generalAlerts[i].title += '\n';
       }
-      this.setState({
-        trams: json.actual,
-        alertText: alertStr,
-        loadingTrams: false,
+      this.downloadTrams('arrival').then((jsonArr) => {
+        // console.log(jsonArr, json);
+        let wannaGoHome = [];
+        for(let i=jsonArr.actual.length - 1;i>=0;i--){
+          let found = false;
+          // console.log(jsonArr.actual[i]);
+          for(let j=json.actual.length - 1;j>=0;j--){
+            // console.log(jsonArr.actual[i], json.actual[j]);
+            if (jsonArr.actual[i].vehicleId === json.actual[j].vehicleId) {
+              found = true;
+              break;
+            }
+          }
+          if (!found && jsonArr.actual[i].vehicleId){
+            let vehId = jsonArr.actual[i].vehicleId;
+            let vehInfo = getVehicleInfo.getVehicleInfo(vehId);
+
+            if(vehInfo.zaj === 'NH'){
+              jsonArr.actual[i].direction = 'Zajezdnia Nowa Huta';
+            }
+            else {
+              jsonArr.actual[i].direction = 'Zajezdnia Podgórze';
+            }
+
+            wannaGoHome.push(jsonArr.actual[i]);
+          }
+        }
+        this.setState({
+          trams: json.actual.concat(wannaGoHome).sort((a,b) => 
+            a.actualRelativeTime - b.actualRelativeTime
+          ),
+          // trams: json.actual,
+          alertText: alertStr,
+          loadingTrams: false,
+        });
       });
     });
   }

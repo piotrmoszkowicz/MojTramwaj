@@ -7,8 +7,6 @@ import TabBarIcon from '../components/TabBarIcon';
 import MapScreen from '../screens/MapScreen';
 import StopsScreen from '../screens/StopsScreen';
 import StopScreen from '../screens/StopScreen';
-import TripScreen from '../screens/TripScreen';
-import SettingsScreen from '../screens/SettingsScreen';
 
 const MapStack = createStackNavigator({
   Map: MapScreen,
