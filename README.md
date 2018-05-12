@@ -6,7 +6,7 @@ Build at SortwareMansion Hackathon at 12.05.2018.
 ## Built With
 
 * [Expo](https://expo.io/) - Mobile App Framework
-* [NativaBase](https://nativebase.io/) - Addional Components
+* [NativeBase](https://nativebase.io/) - Addional Components
 
 ## Authors
 
