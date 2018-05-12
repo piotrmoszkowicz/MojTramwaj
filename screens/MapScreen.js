@@ -33,8 +33,8 @@ export default class MapScreen extends React.Component {
       mapRegion: {
         latitude: 50.0646501,
         longitude: 19.9449799,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421
+        latitudeDelta: 0.0462,
+        longitudeDelta: 0.0211
       },
       acitve: false,
     };
@@ -49,7 +49,7 @@ export default class MapScreen extends React.Component {
       });
   }
 
-  renderTrams(){
+  updateTrams(){
     this.setState({
       loadingTrams: true,
     });
@@ -76,10 +76,14 @@ export default class MapScreen extends React.Component {
   }
 
   async componentDidMount() {
-    this.renderTrams();
-    setInterval(() => {
-      this.renderTrams();
+    this.updateTrams();
+    this.state.intervalStuff = setInterval(() => {
+      this.updateTrams();
     }, 15000);
+  }
+
+  componentWillUnmount(){
+    clearInterval(this.state.intervalStuff);
   }
 
   handleMapRegionChange = mapRegion => {
@@ -193,6 +197,6 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
       textAlign: 'center',
       fontSize: 16,
-      marginBottom: 10,
+      marginBottom: 8,
     },
 });

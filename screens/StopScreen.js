@@ -14,7 +14,8 @@ import {
   Row,
   Grid,
   List,
-  ListItem
+  ListItem,
+  Spinner
 } from 'native-base';
 
 export default class StopScreen extends React.Component {
@@ -23,7 +24,8 @@ export default class StopScreen extends React.Component {
     super(props);
 
     this.state = {
-      trams: []
+      trams: [],
+      loadingTrams: true,
     };
   }
 
@@ -42,22 +44,38 @@ export default class StopScreen extends React.Component {
       });
   }
 
-  componentWillMount = () => {
-    // this.downloadTrams();
+  updateTrams = () => {
+    this.setState({
+      loadingTrams: true,
+    });
     this.downloadTrams().then((json) => {
       this.setState({
-        trams: json.actual
+        trams: json.actual,
+        loadingTrams: false,
       });
     });
+  }
+
+  componentDidMount = () => {
+    this.updateTrams();
+    this.state.intervalStuff = setInterval(() => {
+      this.updateTrams();
+    }, 15000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.state.intervalStuff);
   }
 
   render() {
     return (
       <Container>
         <Content>
+          <Spinner style={this.state.loadingTrams ? {opacity: 1, height: "auto"} : {opacity: 0, height: 0}}/>
           <List dataArray = {
             this.state.trams
           }
+          style={this.state.loadingTrams ? {opacity: 0, height: 0} : {opacity: 1, height: "auto"}}
           renderRow = {
               (item) =>
               <ListItem>
