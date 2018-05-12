@@ -26,6 +26,7 @@ export default class StopScreen extends React.Component {
     this.state = {
       trams: [],
       loadingTrams: true,
+      alertText: '',
     };
   }
 
@@ -49,8 +50,12 @@ export default class StopScreen extends React.Component {
       loadingTrams: true,
     });
     this.downloadTrams().then((json) => {
+      let alertStr = json.generalAlerts.reduce((prev, cur) => {
+        return `${prev}\n${cur}`;
+      });
       this.setState({
         trams: json.actual,
+        alertText: alertStr,
         loadingTrams: false,
       });
     });
@@ -71,6 +76,7 @@ export default class StopScreen extends React.Component {
     return (
       <Container>
         <Content>
+          <Text>{this.state.alertText}</Text>
           <Spinner style={this.state.loadingTrams ? {opacity: 1, height: "auto"} : {opacity: 0, height: 0}}/>
           <List dataArray = {
             this.state.trams

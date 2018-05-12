@@ -123,7 +123,7 @@ export default class MapScreen extends React.Component {
         <MapView
           key={665}
           style = {this.state.loadingTrams || this.state.loadingLocation ? {opacity: 0, flex: 1, height: 0} : {opacity: 1, flex: 1, height: "auto"}}
-          region = { this.state.mapRegion }
+          initialRegion={ this.state.mapRegion }
           onRegionChangeComplete = {
             this.state.loadingTrams || this.state.loadingLocation ? null : this.handleMapRegionChange
           }
