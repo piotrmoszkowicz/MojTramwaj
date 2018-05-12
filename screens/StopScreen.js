@@ -10,6 +10,7 @@ import {
   Content,
   Header,
   Left,
+  Body,
   Col,
   Row,
   Grid,
@@ -50,9 +51,10 @@ export default class StopScreen extends React.Component {
       loadingTrams: true,
     });
     this.downloadTrams().then((json) => {
-      let alertStr = json.generalAlerts.reduce((prev, cur) => {
-        return `${prev}\n${cur}`;
-      });
+      let alertStr = '';
+      for(let i=0;i<json.generalAlerts.length;i++){
+        alertStr += json.generalAlerts[i].title += '\n';
+      }
       this.setState({
         trams: json.actual,
         alertText: alertStr,
@@ -76,7 +78,9 @@ export default class StopScreen extends React.Component {
     return (
       <Container>
         <Content>
-          <Text>{this.state.alertText}</Text>
+          <Body>
+            <Text>{this.state.alertText}</Text>
+          </Body>
           <Spinner style={this.state.loadingTrams ? {opacity: 1, height: "auto"} : {opacity: 0, height: 0}}/>
           <List dataArray = {
             this.state.trams
