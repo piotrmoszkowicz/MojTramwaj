@@ -1,16 +1,25 @@
 import React from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
-import { AppLoading, Asset, Font } from 'expo';
+import { AppLoading, Asset, Font, Permissions } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
 import RootNavigation from './navigation/RootNavigation';
 
 export default class App extends React.Component {
   state = {
     isLoadingComplete: false,
+    loading: true,
   };
 
+  /* async componentDidMount() {
+    const response = await Permissions.askAsync(Permissions.LOCATION);
+    if (response.status !== 'granted') throw "Jebło :<<";
+    this.setState({
+      loading: false,
+    });
+  } */
+
   render() {
-    if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
+    if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen && !this.state.loading) {
       return (
         <AppLoading
           startAsync={this._loadResourcesAsync}

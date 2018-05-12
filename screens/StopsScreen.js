@@ -1,5 +1,8 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import {
+  StyleSheet,
+  TouchableOpacity
+} from 'react-native';
 import {
   Container,
   Header,
@@ -68,6 +71,9 @@ export default class LinksScreen extends React.Component {
   }
 
   render() {
+    const {
+      navigate
+    } = this.props.navigation;
     return (
       <Container>
         <Header searchBar rounded>
@@ -88,8 +94,12 @@ export default class LinksScreen extends React.Component {
         <Content>
           <List dataArray={this.state.stops}
             renderRow={(item) =>
-              <ListItem>
-                <Text>{item.name}</Text>
+              <ListItem onPress = {
+                () => {
+                  console.log('pressed', item.id);
+                } //navigate('StopScreen', {id: item.id})
+              } >
+                <Text style={styles.w100}>{item.name}</Text>
               </ListItem>
             }>
           </List>
@@ -105,4 +115,8 @@ const styles = StyleSheet.create({
     paddingTop: 15,
     backgroundColor: '#fff',
   },
+  w100: {
+    alignSelf: 'stretch',
+    width: '100%'
+  }
 });
