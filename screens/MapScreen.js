@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  AppRegistry,
   StyleSheet,
   View
 } from 'react-native';
@@ -9,7 +10,6 @@ import {
   Location
 } from 'expo';
 import { Container, Header, Text, Icon, Fab, Button, Spinner } from 'native-base';
-
 
 export default class MapScreen extends React.Component {
   static navigationOptions = {
@@ -26,7 +26,7 @@ export default class MapScreen extends React.Component {
     super(props);
 
     this.state = {
-      lastUpdatedTimeStamp: Date.now(),
+      lastUpdatedTimeStamp: 0,
       trams: [],
       loadingTrams: true,
       loadingLocation: false,
@@ -36,13 +36,12 @@ export default class MapScreen extends React.Component {
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421
       },
-      acitve: true,
+      acitve: false,
     };
   }
 
   async getTramsLocations(lastTimeStamp) {
     const apiLink = `http://www.ttss.krakow.pl/internetservice/geoserviceDispatcher/services/vehicleinfo/vehicles?positionType=CORRECTED&colorType=ROUTE_BASED&lastUpdate=${lastTimeStamp}`;
-    console.log(apiLink);
     return fetch(apiLink)
       .then((response) => response.json())
       .catch((err) => {
@@ -79,12 +78,12 @@ export default class MapScreen extends React.Component {
   async componentDidMount() {
     this.renderTrams();
     setInterval(() => {
-      console.log(this.state);
       this.renderTrams();
     }, 15000);
   }
 
   handleMapRegionChange = mapRegion => {
+    console.log('bang');
     this.setState({
       mapRegion
     });
@@ -122,10 +121,10 @@ export default class MapScreen extends React.Component {
           style = {this.state.loadingTrams || this.state.loadingLocation ? {opacity: 0, flex: 1, height: 0} : {opacity: 1, flex: 1, height: "auto"}}
           region = { this.state.mapRegion }
           onRegionChangeComplete = {
-            this.state.loadingTrams ? null : this.handleMapRegionChange
+            this.state.loadingTrams || this.state.loadingLocation ? null : this.handleMapRegionChange
           }
           >
-            {this.state.trams.map((tram) => {
+           {this.state.trams.map((tram) => {
               let i = 0;
               let crds = {
                 latitude: tram.latitude,
@@ -133,7 +132,10 @@ export default class MapScreen extends React.Component {
               };
               let number = tram.name.split(' ')[0];
               return (
-                <MapView.Marker coordinate={crds} key={i++}>
+                <MapView.Marker
+                  coordinate={crds}
+                  key={++i}
+                  >
                   <View style={styles.circle}>
                     <Text style={styles.pinText}>{number}</Text>
                   </View>
