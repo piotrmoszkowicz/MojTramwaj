@@ -5,7 +5,7 @@ import {
 import {
   MapView
 } from 'expo';
-import { Container } from 'native-base';
+import { Container, Header, Text } from 'native-base';
 
 
 export default class HomeScreen extends React.Component {
@@ -39,7 +39,7 @@ export default class HomeScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 15,
+    paddingTop: 100,
     backgroundColor: '#fff',
   },
 });
