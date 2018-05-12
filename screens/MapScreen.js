@@ -1,25 +1,25 @@
 import React from 'react';
 import {
-  StyleSheet
+  StyleSheet,
+  View
 } from 'react-native';
 import {
   MapView,
   Permissions,
   Location
 } from 'expo';
-import { Container, Header, Text, Icon, Fab, Button } from 'native-base';
+import { Container, Header, Text, Icon, Fab, Button, Spinner } from 'native-base';
 
 
 export default class MapScreen extends React.Component {
   static navigationOptions = {
     title: 'Mapa',
-    headerRight: < Icon name = {
-      'md-refresh'
-    }
-    onPress = {
-        this.renderTrams
-    }
-    />,
+    /* headerRight:
+      <Icon
+        name={'md-refresh'}
+        onPress = { this.renderTrams }
+        style = {{ marginRight: 10 }}
+      />, */
   };
 
   constructor(props){
@@ -29,11 +29,12 @@ export default class MapScreen extends React.Component {
       lastUpdatedTimeStamp: Date.now(),
       trams: [],
       loadingTrams: true,
+      loadingLocation: false,
       mapRegion: {
         latitude: 50.0646501,
         longitude: 19.9449799,
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421
       },
       acitve: true,
     };
@@ -50,6 +51,9 @@ export default class MapScreen extends React.Component {
   }
 
   renderTrams(){
+    this.setState({
+      loadingTrams: true,
+    });
     this.getTramsLocations(this.state.lastUpdatedTimeStamp).then((json) => {
       let trams = json.vehicles;
 
@@ -67,14 +71,17 @@ export default class MapScreen extends React.Component {
       this.setState({
         trams: tramsToDraw,
         loadingTrams: false,
+        lastUpdatedTimeStamp: Date.now()
       });
     });
   }
 
   async componentDidMount() {
     this.renderTrams();
-
-    this.myRegion();
+    setInterval(() => {
+      console.log(this.state);
+      this.renderTrams();
+    }, 15000);
   }
 
   handleMapRegionChange = mapRegion => {
@@ -84,6 +91,9 @@ export default class MapScreen extends React.Component {
   }
 
   myRegion = async () => {
+    this.setState({
+      loadingLocation: true,
+    })
     const response = await Permissions.askAsync(Permissions.LOCATION);
     if (response.status === 'granted') {
       try {
@@ -94,7 +104,8 @@ export default class MapScreen extends React.Component {
             longitude: location.coords.longitude,
             latitudeDelta: 0.01,
             longitudeDelta: 0.01
-          }
+          },
+          loadingLocation: false,
         });
       } catch (err) {
         console.error(err);
@@ -105,15 +116,13 @@ export default class MapScreen extends React.Component {
   render() {
     return (
       <Container>
-          <MapView
-          style = {
-            {
-              flex: 1
-            }
-          }
+        <Spinner style={this.state.loadingTrams || this.state.loadingLocation ? {opacity: 1, height: "auto"} : {opacity: 0, height: 0}}/>
+        <MapView
+          key={665}
+          style = {this.state.loadingTrams || this.state.loadingLocation ? {opacity: 0, flex: 1, height: 0} : {opacity: 1, flex: 1, height: "auto"}}
           region = { this.state.mapRegion }
           onRegionChangeComplete = {
-            this.handleMapRegionChange
+            this.state.loadingTrams ? null : this.handleMapRegionChange
           }
           >
             {this.state.trams.map((tram) => {
@@ -124,17 +133,16 @@ export default class MapScreen extends React.Component {
               };
               let number = tram.name.split(' ')[0];
               return (
-                <MapView.Circle
-                  key={i++}
-                  center={crds}
-                  radius={30}
-                  fillColor={"#000"}
-                >
-                  <Text style={{color: "#FFFFFF", zIndex: 5}}>{number}</Text>
-                </MapView.Circle>
+                <MapView.Marker coordinate={crds} key={i++}>
+                  <View style={styles.circle}>
+                    <Text style={styles.pinText}>{number}</Text>
+                  </View>
+                </MapView.Marker>
               );
             })}
-          </MapView>
+         </MapView>
+          
+          
           <Fab
             active={this.state.active}
             direction="up"
@@ -143,11 +151,12 @@ export default class MapScreen extends React.Component {
             position="bottomRight"
             onPress={() => this.setState({ active: !this.state.active })}>
             <Icon name="md-compass" />
-            <Button style={{ backgroundColor: '#34A34F' }}
+              <Button style={{ backgroundColor: '#34A34F' }}
                 onPress={this.myRegion}
-            >
+              >
               <Icon name="navigate" />
             </Button>
+            
             <Button style={{ backgroundColor: '#3B5998' }}
             onPress={() => this.setState({
               mapRegion: {
@@ -171,4 +180,17 @@ const styles = StyleSheet.create({
     paddingTop: 100,
     backgroundColor: '#fff',
   },
+  circle: {
+      width: 30,
+      height: 30,
+      borderRadius: 30 / 2,
+      backgroundColor: 'red',
+    },
+    pinText: {
+      color: 'white',
+      fontWeight: 'bold',
+      textAlign: 'center',
+      fontSize: 16,
+      marginBottom: 10,
+    },
 });

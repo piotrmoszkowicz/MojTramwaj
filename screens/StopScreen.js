@@ -70,7 +70,7 @@ export default class StopScreen extends React.Component {
                       <Text>{ item.direction }</Text>
                     </Col>
                     <Col style={{width: "20%"}}>
-                      <Text>{ item.mixedTime }</Text>
+                      <Text>{ item.mixedTime === '0 Min' ? <Icon name="md-fastforward" /> : item.mixedTime }</Text>
                     </Col>
                     </Row>
                   </Grid>
