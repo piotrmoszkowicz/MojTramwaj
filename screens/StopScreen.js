@@ -77,10 +77,8 @@ export default class StopScreen extends React.Component {
   render() {
     return (
       <Container>
+        <Text style={{alignSelf: 'baseline', width: "90%", marginLeft: "5%", color: 'red'}}>{this.state.alertText}</Text>
         <Content>
-          <Body>
-            <Text>{this.state.alertText}</Text>
-          </Body>
           <Spinner style={this.state.loadingTrams ? {opacity: 1, height: "auto"} : {opacity: 0, height: 0}}/>
           <List dataArray = {
             this.state.trams
@@ -88,7 +86,7 @@ export default class StopScreen extends React.Component {
           style={this.state.loadingTrams ? {opacity: 0, height: 0} : {opacity: 1, height: "auto"}}
           renderRow = {
               (item) =>
-              <ListItem>
+              <ListItem style={{marginTop: 0}}>
                 <Grid>
                   <Row>
                     <Col style={{width: "10%"}}>
