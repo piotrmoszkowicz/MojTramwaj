@@ -130,7 +130,7 @@ export default class MapScreen extends React.Component {
                   radius={30}
                   fillColor={"#000"}
                 >
-                  <Text style={{color: "#FFFFFF"}}>{number}</Text>
+                  <Text style={{color: "#FFFFFF", zIndex: 5}}>{number}</Text>
                 </MapView.Circle>
               );
             })}
